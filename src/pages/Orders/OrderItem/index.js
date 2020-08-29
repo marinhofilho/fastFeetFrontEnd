@@ -147,7 +147,11 @@ export default function OrderItem({ order, updateOrders }) {
   return (
     <Container statusColor={status.color} statusBackground={status.background}>
       <td>#{order.id}</td>
-      <td>{order.recipient.name}</td>
+      {order.recipient && order.recipient.name ? (
+        <td>{order.recipient.name}</td>
+      ) : (
+        <td>Não cadastrado</td>
+      )}
 
       {order.deliverymen && order.deliverymen.name ? (
         <td> {order.deliverymen.name} </td>
@@ -155,12 +159,20 @@ export default function OrderItem({ order, updateOrders }) {
         <td>Não cadastrado</td>
       )}
       {/* <td>{order.deliverymen.name}</td>
-        this one breaks if the deliverymen is deleated.
+        this one breaks if the deliverymen is deleted.
         the working version needs to check if there is a deliverymen first
-        'order.deliverymen' and not just the value it searches
+        'order.deliverymen' and not just the value it searches (in the example 'name')
       */}
-      <td>{order.recipient.city}</td>
-      <td>{order.recipient.state}</td>
+      {order.recipient && order.recipient.city ? (
+        <td>{order.recipient.city}</td>
+      ) : (
+        <td>Não cadastrado</td>
+      )}
+      {order.recipient && order.recipient.state ? (
+        <td>{order.recipient.state}</td>
+      ) : (
+        <td>Não cadastrado</td>
+      )}
       <td>
         <span className="status">{status.text}</span>
       </td>
@@ -214,13 +226,19 @@ export default function OrderItem({ order, updateOrders }) {
                         <strong>Produto: </strong>
                         {order.product}
                       </span>
-                      <span>
-                        {order.recipient.street}, {order.recipient.number}
-                      </span>
-                      <span>
-                        {order.recipient.city} - {order.recipient.state}
-                      </span>
-                      <span>{order.recipient.cep}</span>
+                      {order.recipient ? (
+                        <>
+                          <span>
+                            {order.recipient.street}, {order.recipient.number}
+                          </span>
+                          <span>
+                            {order.recipient.city} - {order.recipient.state}
+                          </span>
+                          <span>{order.recipient.cep}</span>
+                        </>
+                      ) : (
+                        <span>Não cadastrado</span>
+                      )}
                     </div>
                     <aside>
                       <Title>Datas</Title>

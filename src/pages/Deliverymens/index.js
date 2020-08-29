@@ -15,7 +15,7 @@ import {
   DeliverymenHeader,
 } from './styles';
 
-export default function Orders() {
+export default function Deliverymens() {
   const [deliverymens, setDeliverymens] = useState([]);
   const [loading, setLoading] = useState(false);
 

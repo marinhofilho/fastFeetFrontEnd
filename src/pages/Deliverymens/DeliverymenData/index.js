@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 import { MdMoreHoriz, MdEdit, MdDeleteForever } from 'react-icons/md';
 import { toast } from 'react-toastify';

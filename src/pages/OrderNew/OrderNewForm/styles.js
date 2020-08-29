@@ -1,6 +1,6 @@
 // https://github.com/enrickdaltro/fastfeet/blob/master/frontend/src/components/DeliveryForm/styles.js
-
 import styled from 'styled-components';
+import { darken } from 'polished';
 
 export const Container = styled.div`
   display: flex;
@@ -33,6 +33,35 @@ export const InitialContent = styled.div`
     display: flex;
     flex: 1;
     justify-content: space-between;
+  }
+`;
+
+export const Button = styled.button`
+  display: flex;
+  align-items: center;
+  height: 36px;
+  width: 112px;
+  background: #7159c1;
+  border: none;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: ${darken(0.06, '#7159c1')};
+  }
+
+  svg {
+    margin-right: 5px;
+    margin-left: 8px;
+  }
+
+  strong {
+    color: #fff;
+    font-size: 14px;
+    margin: 0 10px 0 0;
   }
 `;
 

@@ -1,16 +1,26 @@
 import React from 'react';
 
 import { Form } from '@unform/web';
+import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 
-import ButtonBack from '~/components/ButtonBack';
-import ButtonSave from '~/components/ButtonSave';
+import history from '~/services/history';
 import RecipientInput from './RecipientInput';
 import DeliverymenInput from './DeliverymenInput';
 import Input from '~/components/Form/Input';
 
-import { Container, InitialContent, PageContent, InputContent } from './styles';
+import {
+  Container,
+  InitialContent,
+  Button,
+  PageContent,
+  InputContent,
+} from './styles';
 
 export default function OrderNewForm({ onSubmit, title, schema, ...rest }) {
+  function handleGoBack() {
+    history.push('/orders');
+  }
+
   return (
     <Container>
       <Form onSubmit={onSubmit} {...rest}>
@@ -18,8 +28,14 @@ export default function OrderNewForm({ onSubmit, title, schema, ...rest }) {
           <strong>{title}</strong>
 
           <aside>
-            <ButtonBack />
-            <ButtonSave />
+            <Button type="button" onClick={handleGoBack}>
+              <MdKeyboardArrowLeft size={24} />
+              Voltar
+            </Button>
+            <Button color="#7D40E7" type="submit">
+              <MdDone size={24} />
+              Salvar
+            </Button>
           </aside>
         </InitialContent>
 

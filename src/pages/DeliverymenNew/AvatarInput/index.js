@@ -2,11 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useField } from '@rocketseat/unform';
-
 import { MdImage } from 'react-icons/md';
-
 import api from '~/services/api';
-
 import { Container } from './styles';
 
 export default function AvatarInput() {
@@ -27,7 +24,7 @@ export default function AvatarInput() {
     }
   }, [ref, registerField]);
 
-  async function handleChange(e) {
+  async function handleChanged(e) {
     const data = new FormData();
 
     data.append('file', e.target.files[0]);
@@ -37,6 +34,7 @@ export default function AvatarInput() {
     console.tron.log(response);
 
     const { id, url } = response.data;
+    console.tron.log(response.data);
 
     setFile(id);
     setPreview(url);
@@ -46,7 +44,7 @@ export default function AvatarInput() {
     <Container>
       <label htmlFor="avatar">
         {preview ? (
-          <img src={preview} alt="Avatar do Entregador" />
+          <img src={preview} alt="avatar" />
         ) : (
           <>
             <div>
@@ -61,7 +59,7 @@ export default function AvatarInput() {
           id="avatar"
           accept="image/*"
           data-file={file}
-          onChange={handleChange}
+          onChange={handleChanged}
           ref={ref}
         />
       </label>

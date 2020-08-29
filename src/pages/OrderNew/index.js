@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 
 import { toast } from 'react-toastify';
 
-import OrderNewForm from '~/components/OrderNewForm';
+import OrderNewForm from './OrderNewForm';
 
 import api from '~/services/api';
 import history from '~/services/history';

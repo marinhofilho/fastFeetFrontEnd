@@ -7,16 +7,19 @@ export const Container = styled.div`
 
   label {
     cursor: pointer;
+    display: flex;
+    justify-content: center;
 
     &:hover {
       opacity: 0.7;
     }
 
     img {
+      align-self: center;
       height: 120px;
       width: 120px;
       border-radius: 50%;
-      border: 2px solid #ddd;
+      border: 1px solid #7159c1;
     }
 
     input {
