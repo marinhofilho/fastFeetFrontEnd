@@ -1,3 +1,3 @@
 # fastFeetFrontEnd
 
-FrontEnd da FastFeetWeb
+FrontEnd da aplicação FastFeetWeb
