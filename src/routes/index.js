@@ -18,6 +18,7 @@ export default function Routes() {
   return (
     <Switch>
       <Route path="/orders/new" exact component={OrderNew} isPrivate />
+      <Route path="/orders/edit/:id" exact component={OrderNew} isPrivate />
       <Route path="/orders" exact component={Orders} isPrivate />
       <Route path="/" exact component={SignIn} />
       {/* Need to use exact or the first route (just '/orders') will be the one called */}

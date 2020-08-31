@@ -1,81 +1,82 @@
 import styled from 'styled-components';
+import { Form as UnForm } from '@rocketseat/unform';
+/* necessary to customize the Form - https://unform.dev/recipes/styled-components/ */
+import { darken } from 'polished';
 
-export const Container = styled.div``;
-
-/* import styled from 'styled-components';
-
-export const Container = styled.div`
-  padding-top: 40px;
+export const Form = styled(UnForm)`
+  max-width: 1200px;
+  min-width: 500px;
+  /* less width and the form deforms */
   margin: 0 auto;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
+
+  header {
+    margin-bottom: 2rem;
+    /* root element inherit */
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    button {
+      &:nth-child(2) {
+        margin-left: auto;
+      }
+      &:nth-child(3) {
+        margin-left: 16px;
+      }
+    }
+  }
 `;
 
-export const InitialContent = styled.div`
+export const Button = styled.button.attrs((props) => ({
+  color: props.color || '#CCCCCC',
+}))`
+  height: 36px;
+  background: ${(props) => props.color};
+  text-transform: uppercase;
+  color: #ffffff;
+  font-weight: bold;
   display: flex;
-  flex: 1;
   flex-direction: row;
-  margin-top: 20px;
-  justify-content: space-between;
-
-  strong {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 40px;
+  justify-content: center;
+  align-items: center;
+  padding-left: 15px;
+  padding-right: 20px;
+  border-radius: 4px;
+  border: none;
+  transition: background 300ms;
+  svg {
+    margin-right: 6px;
+  }
+  &:hover {
+    background: ${(props) => darken(0.2, props.color)};
   }
 `;
 
-export const Buttons = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  button {
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-`;
-
-export const FormContainer = styled.div`
+export const Card = styled.div`
+  width: 100%;
   background: #fff;
   border-radius: 4px;
+  padding: 30px 22px;
   display: flex;
-  justify-content: center;
-
-  form {
-    margin: 25px auto 25px auto;
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    aside {
-      display: flex;
-      width: 90%;
-      justify-content: space-between;
-      margin-bottom: 20px;
-
-      div {
-        height: 36px;
-        width: 45%;
-      }
+  flex-direction: row;
+  flex-wrap: wrap;
+  /* below are the inputs styles */
+  > div {
+    padding-left: 8px;
+    padding-right: 8px;
+    &:nth-child(1),
+    &:nth-child(2) {
+      width: 50%;
     }
-
-    span {
-      display: flex;
-      margin-top: 16px;
-      justify-content: center;
-      width: 90%;
-
-      div {
-        width: 100%;
-      }
-    }
-
-    p {
-      font-weight: bold;
-      margin-bottom: 5px;
+    &:last-child {
+      width: 100%;
     }
   }
 `;
-*/
+
+export const EmptyOrder = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  margin: 30vh auto;
+  text-align: center;
+`;

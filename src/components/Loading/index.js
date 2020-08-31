@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Loader from 'react-loader-spinner';
-import { Container, LoadingMessage } from './styles';
+import { Container } from './styles';
 
 export default function Loading() {
   return (
@@ -13,9 +13,7 @@ export default function Loading() {
         width={100}
         margin-left={52}
       />
-      <LoadingMessage>
-        <h1>Carregando</h1>
-      </LoadingMessage>
+      <strong>Carregando</strong>
     </Container>
   );
 }

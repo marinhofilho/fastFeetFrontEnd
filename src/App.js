@@ -1,5 +1,6 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
+// https://fkhadra.github.io/react-toastify/introduction/ - toastify customization
 import { Router } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
@@ -22,7 +23,7 @@ function App() {
         <Router history={history}>
           <Routes />
           <GlobalStyle />
-          <ToastContainer />
+          <ToastContainer position="top-center" />
         </Router>
       </PersistGate>
     </Provider>

@@ -1,41 +1,194 @@
-import React from 'react';
-import * as Yup from 'yup';
-
+import React, { useEffect, useState, useMemo } from 'react';
+import { PropTypes } from 'prop-types';
 import { toast } from 'react-toastify';
+import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 
-import OrderNewForm from './OrderNewForm';
+import { Form, Button, Card, EmptyOrder } from './styles';
+import { PageTitle } from '~/styles/PageTitle';
+import Input from '~/components/Input';
+import Select from '~/components/Select';
 
 import api from '~/services/api';
 import history from '~/services/history';
 
-export default function OrderNew() {
-  const schema = Yup.object().shape({
-    recipient_id: Yup.number().required('É preciso informar o destinatário'),
-    deliverymen_id: Yup.number().required('É preciso informar o entregador'),
-    product: Yup.number().required('Produto obrigatório'),
-  });
+export default function OrderNew({ match }) {
+  const { id } = match.params;
+  /* react-router-dom passes a prop - match - in every route that is rendered.
+  inside the match object there is a params object
+  there we find the :id - key - that was put in the route creation */
 
-  async function handleSubmit({ recipient_id, deliverymen_id, product }) {
-    try {
-      await api.post('orders', {
-        recipient_id,
-        deliverymen_id,
-        product,
-      });
+  const [order, setOrder] = useState(null);
+  const [recipients, setRecipients] = useState([]);
+  const [deliverymen, setDeliverymen] = useState([]);
+  const [selectedRecipient, setSelectedRecipient] = useState(null);
+  // is used to fill the recipient(destinatário) input
+  const [selectedDeliveryman, setSelectedDeliveryman] = useState(null);
+  // is used to fill the deliverymen(entregador) input
 
-      toast.success('Encomenda cadastrada');
-      history.push('/orders');
-    } catch ({ response }) {
-      console.tron.log(response);
-      toast.error(`Erro ao criar encomenda ${response.data.error}`);
+  useEffect(() => {
+    // is used to fill the input forms from recipient and deliverymen
+    async function loadData() {
+      try {
+        const [recipientResponse, deliverymenResponse] = await Promise.all([
+          api.get('recipients'),
+          api.get('deliverymen'),
+        ]);
+
+        setRecipients(recipientResponse.data);
+        setDeliverymen(deliverymenResponse.data);
+
+        if (id) {
+          const { data } = await api.get(`orders/${id}`);
+          setOrder(data);
+          // code below works because of models relation
+          setSelectedRecipient(data.recipient);
+          setSelectedDeliveryman(data.deliverymen);
+        }
+      } catch (err) {
+        toast.error('Falha ao carregar dados');
+      }
+    }
+    loadData();
+  }, [id]);
+
+  // pre-existing data from recipients
+  const recipientOptions = useMemo(() => {
+    return recipients.map((recipient) => ({
+      value: recipient,
+      label: recipient.name,
+    }));
+  }, [recipients]);
+
+  // pre-existing data from deliverymens
+  const deliverymenOptions = useMemo(() => {
+    return deliverymen.map((deliveryman) => ({
+      value: deliveryman,
+      label: deliveryman.name,
+    }));
+  }, [deliverymen]);
+
+  // both recipient and deliverymen inputs only accept pre-existing data
+  const handleChangeRecipient = (selectedOption) => {
+    const { value } = selectedOption;
+
+    setSelectedRecipient(value);
+  };
+
+  const handleChangeDeliveryman = (selectedOption) => {
+    const { value } = selectedOption;
+    setSelectedDeliveryman(value);
+  };
+
+  function handleGoBack() {
+    history.push('/orders');
+  }
+
+  async function handleSubmit(data) {
+    if (!selectedRecipient || !selectedDeliveryman || !data.product) {
+      toast.error('Preencha todo o formulário');
+    }
+    // picks data from the inputs and make then "postable/editable" on the backend
+    data.recipient_id = selectedRecipient.id;
+    data.deliverymen_id = selectedDeliveryman.id;
+
+    if (id) {
+      try {
+        await api.put(`orders/${id}`, data);
+        toast.success('Encomenda atualizada com sucesso!');
+        history.push('/orders');
+      } catch (err) {
+        toast.error(
+          'Não foi possível atualizar a encomenda. Verifique os seus dados'
+        );
+      }
+    } else {
+      try {
+        await api.post('orders', data);
+        toast.success('Encomenda Cadastrada com sucesso!');
+        history.push('/orders');
+      } catch (err) {
+        toast.error(
+          'Não foi possível realizar o cadastro. Verifique os seus dados'
+        );
+      }
     }
   }
 
+  // handle edition of unexistent order
+  if (id && !order) {
+    return (
+      <EmptyOrder>
+        <h1>Pedido não encontrado</h1>
+        <br />
+        <Button type="button" onClick={handleGoBack}>
+          <MdKeyboardArrowLeft size={24} />
+          Voltar para os pedidos
+        </Button>
+      </EmptyOrder>
+    );
+  }
+
   return (
-    <OrderNewForm
-      title="Cadastro de Encomendas"
-      schema={schema}
-      onSubmit={handleSubmit}
-    />
+    // form originates the data that is passed in handlesubmit
+    <Form onSubmit={handleSubmit} initialData={order || undefined}>
+      <header>
+        <PageTitle>
+          {order ? 'Editar encomenda' : 'Cadastrar encomenda'}
+        </PageTitle>
+        <Button type="button" onClick={handleGoBack}>
+          <MdKeyboardArrowLeft size={24} />
+          Voltar
+        </Button>
+        <Button color="#7D40E7" type="submit">
+          <MdDone size={24} />
+          Salvar
+        </Button>
+      </header>
+      <Card>
+        {/* async form can also be done with react-async-form */}
+        <Select
+          name="recipient"
+          label="destinatário"
+          placeholder="Selecione um destinatário"
+          options={recipientOptions}
+          // when editing order there is a default value available
+          defaultValue={
+            order
+              ? {
+                  value: order.recipient.id,
+                  label: order.recipient.name,
+                }
+              : undefined
+          }
+          onChange={handleChangeRecipient}
+        />
+        <Select
+          name="deliveryman"
+          label="Entregador"
+          placeholder="Selecione um entregador"
+          options={deliverymenOptions}
+          // when editing order there is a default value available
+          defaultValue={
+            order
+              ? {
+                  value: order.deliverymen.id,
+                  label: order.deliverymen.name,
+                }
+              : undefined
+          }
+          onChange={handleChangeDeliveryman}
+        />
+        <Input name="product" title="Nome do produto" placeholder="Ex: Livro" />
+      </Card>
+    </Form>
   );
 }
+
+// validation of passed properties
+OrderNew.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.node,
+    }).isRequired,
+  }).isRequired,
+};

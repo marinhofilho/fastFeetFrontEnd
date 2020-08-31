@@ -16,6 +16,11 @@ export const Content = styled.div`
   border-radius: 4px;
   padding: 30px;
 
+  img {
+    display: block;
+    margin: 0 auto;
+  }
+
   p {
     font-weight: bold;
     margin: 10px 0 5px;
@@ -40,9 +45,6 @@ export const Content = styled.div`
       margin: 0 0 5px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 4px;
-
-      &::placeholder {
-      }
     }
 
     button {
@@ -53,7 +55,6 @@ export const Content = styled.div`
       background: #7c44e4;
       border: 0;
       border-radius: 4px;
-      font-size: 14px;
       transition: background 0.2s;
 
       &:hover {
