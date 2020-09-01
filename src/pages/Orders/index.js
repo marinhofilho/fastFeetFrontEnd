@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { MdAdd, MdRemoveRedEye, MdEdit, MdDeleteForever } from 'react-icons/md';
 
 import history from '~/services/history';
 import api from '~/services/api';
@@ -6,9 +8,10 @@ import api from '~/services/api';
 import OrderItem from './OrderItem';
 import Loading from '~/components/Loading';
 import SearchInput from '~/components/SearchInput';
-import AddButton from '~/components/AddButton';
 
-import { Container, InitialContent, OrdersList, OrderHeader } from './styles';
+import { PageTitle } from '~/styles/PageTitle';
+
+import { Container, OrdersList, OrderHeader } from './styles';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -55,13 +58,16 @@ export default function Orders() {
         <Loading />
       ) : (
         <>
-          <InitialContent>
-            <strong>Gerenciando Encomendas</strong>
-            <aside>
-              <SearchInput onChange={onChange} placeholder="encomenda" />
-              <AddButton onClick={() => history.push('/orders/new')} />
-            </aside>
-          </InitialContent>
+          <header>
+            <PageTitle>Gerenciando Encomendas</PageTitle>
+          </header>
+          <div>
+            <SearchInput onChange={onChange} placeholder="encomenda" />
+            <Link to="/orders/new">
+              <MdAdd color="#FFFFFF" size={36} />
+              Cadastrar
+            </Link>
+          </div>
           <OrdersList>
             <thead>
               <OrderHeader>

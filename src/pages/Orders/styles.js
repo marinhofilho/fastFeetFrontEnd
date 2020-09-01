@@ -2,27 +2,40 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 export const Container = styled.div`
-  padding-top: 10px;
-  margin: 0 auto;
   max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-`;
+  margin: 0 auto;
 
-export const InitialContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
-
-  strong {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 80px;
+  header {
+    margin-bottom: 34px;
   }
 
-  aside {
+  header + div {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+
+    a {
+      padding: 0px 16px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+      background: #7f40e7;
+      transition: background 300ms;
+      border-radius: 4px;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 36px;
+
+      svg {
+        margin-right: 4px;
+      }
+
+      &:hover {
+        background: ${darken(0.2, '#7D40e7')};
+      }
+    }
   }
 `;
 
@@ -56,8 +69,6 @@ export const Content = styled.div`
     }
   }
 `;
-
-export const Title = styled.div``;
 
 export const OrdersList = styled.table`
   margin-top: 22px;
