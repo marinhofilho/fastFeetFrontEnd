@@ -39,66 +39,168 @@ export const Container = styled.div`
   }
 `;
 
-export const Content = styled.div`
-  div {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-top: 34px;
+export const OrderStatus = styled.span`
+  background: ${(props) => props.color};
+  color: ${(props) => darken(0.4, props.color)};
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 12px;
+  font-size: 14px;
+  display: inline-block;
+  font-weight: bold;
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    margin-right: 6px;
+    background: ${(props) => darken(0.4, props.color)};
   }
+`;
 
-  input {
-    height: 36px;
-    width: 237px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    padding: 9px 15px;
-    margin-left: 5px;
+export const LastItem = styled.span`
+  display: flex;
+  justify-content: center;
+`;
+
+export const OptionsContainer = styled.span`
+  position: relative;
+`;
+
+export const Badge = styled.button`
+  padding: 14px 28px;
+  background: none;
+  border: 0;
+  position: relative;
+  align-content: center;
+
+  &:hover {
+    background: ${darken(0.1, '#fff')};
   }
-  .newOrder {
-    font-weight: bold;
-    border: 0;
-    border-radius: 4px;
-    background: #7159c1;
-    padding: 10px;
+`;
+
+export const Button = styled.button`
+  background: none;
+  border: 0;
+  position: relative;
+  align-self: center;
+  display: flex;
+  flex: 1;
+
+  &:hover {
+    background: ${darken(0.1, '#fff')};
+  }
+`;
+
+export const OptionsList = styled.span`
+  position: absolute;
+  z-index: 100;
+  width: 150px;
+  left: calc(50% - 73px);
+  top: 100%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 5px;
+  display: ${(props) => (props.visible ? 'block' : 'none')};
+  &::before {
+    content: '▲';
+    position: absolute;
+    left: 71px;
+    top: -13px;
+    width: 0;
+    height: 0;
     color: #fff;
-    transition: 0.6s;
-
-    &:hover {
-      background: ${darken(0.06, '#7d40e7')};
-    }
+    text-shadow: 1px 0 0 rgba(0, 0, 0, 0.25);
   }
 `;
 
-export const OrdersList = styled.table`
-  margin-top: 22px;
-  width: 100%;
-  border-spacing: 0px 20px;
+export const Option = styled.span`
+  display: flex;
+  align-content: center;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-bottom: 1px solid #eeeeee;
 
-  td {
-    padding-left: 20px;
-    color: #707070;
+  svg {
+    margin-bottom: 6px;
+    margin-top: 6px;
   }
 
-  td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-
-  td:last-child {
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
+  p {
+    font-size: 16px;
+    margin-left: 14px;
+    font-weight: lighter;
+    color: #999999;
+    margin-bottom: 6px;
+    margin-top: 6px;
   }
 `;
 
-export const OrderHeader = styled.tr`
-  th {
-    text-align: left;
-    padding-left: 20px;
-    font-size: 18px;
-    color: #444;
+export const ModalContainer = styled.div`
+  flex: 1;
+
+  strong {
+    color: #444444;
+    font-size: 16px;
+    line-height: 25px;
   }
-  th:last-child {
-    text-align: center;
+
+  aside {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  div:first-child {
+    display: flex;
+    flex-direction: column;
+  }
+
+  span {
+    color: #666666;
+    font-size: 16px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+  }
+`;
+
+export const ImageContainer = styled.div`
+  display: flex;
+  align-items: center;
+  align-content: center;
+`;
+
+export const Title = styled.strong`
+  margin-bottom: 4px;
+  color: #444444;
+`;
+
+export const LastOption = styled.span`
+  display: flex;
+  align-content: center;
+  margin-right: 10px;
+  margin-left: 10px;
+
+  svg {
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
+
+  p {
+    font-size: 16px;
+    margin-left: 14px;
+    font-weight: lighter;
+    color: #999999;
+    margin-bottom: 6px;
+    margin-top: 6px;
   }
 `;
