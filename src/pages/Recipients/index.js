@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { MdMoreHoriz, MdEdit, MdDeleteForever } from 'react-icons/md';
+import {
+  MdAdd,
+  MdRemoveRedEye,
+  MdEdit,
+  MdDeleteForever,
+  MdMoreHoriz,
+} from 'react-icons/md';
+
 import {
   Container,
-  InitialContent,
-  ListHead,
-  RecipientsList,
-  DataContainer,
   LastItem,
   OptionsContainer,
   Badge,
@@ -22,7 +25,10 @@ import api from '~/services/api';
 
 import Loading from '~/components/Loading';
 import SearchInput from '~/components/SearchInput';
+import Table from '~/components/Table';
 import AddButton from '~/components/AddButton';
+
+import { PageTitle } from '~/styles/PageTitle';
 
 export default function Recipients({ recipient }) {
   const [ŕecipients, setRecipients] = useState([]);
@@ -93,25 +99,28 @@ export default function Recipients({ recipient }) {
         <Loading />
       ) : (
         <>
-          <InitialContent>
-            <strong>Gerenciando Destinatários</strong>
-            <aside>
+          <header>
+            <PageTitle>Gerenciando Destinatários</PageTitle>
+          </header>
+            <div>
               <SearchInput onChange={onChange} placeholder="destinatário" />
-              <AddButton onClick={() => history.push('/recipient/new')} />
-            </aside>
-          </InitialContent>
-          <RecipientsList>
+              <Link to="/recipient/new">
+              <MdAdd color="#FFFFFF" size={36} />
+              Cadastrar
+              </Link>            
+            </div>
+          <Table>
             <thead>
-              <ListHead>
+              <tr>
                 <th>ID</th>
                 <th>Nome</th>
                 <th>Endereço</th>
                 <th>Ações</th>
-              </ListHead>
+              </tr>
             </thead>
             <tbody>
               {ŕecipients.map((recipient) => (
-                <DataContainer
+                <tr
                   updateRecipients={updateRecipients}
                   key={recipient.id}
                 >
@@ -135,7 +144,7 @@ export default function Recipients({ recipient }) {
                             <Button
                               onClick={() => {
                                 history.push(
-                                  `/recipients/edit/${recipient.id}`
+                                  `/recipient/edit/${recipient.id}`
                                 );
                               }}
                             >
@@ -158,10 +167,10 @@ export default function Recipients({ recipient }) {
                       </OptionsContainer>
                     </LastItem>
                   </td>
-                </DataContainer>
+                </tr>
               ))}
             </tbody>
-          </RecipientsList>
+          </Table>
         </>
       )}
     </Container>

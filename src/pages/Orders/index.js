@@ -45,6 +45,10 @@ export default function Orders() {
   const [modalOpen, setModalOpen] = useState(false);
   const [formattedDates, setFormattedDates] = useState({});
 
+  /* useCallBack receives a callback and an array as arguments
+    returns a version of the callback that only changes if one of
+    the entries is modified
+    https://pt-br.reactjs.org/docs/hooks-reference.html#usecallback */
   const parserOrders = useCallback((data) => {
     function takeOutDate(dt) {
       if (dt === null) {

@@ -1,66 +1,142 @@
 import styled from 'styled-components';
+import { darken } from 'polished';
 
 export const Container = styled.div`
-  padding-top: 10px;
-  margin: 0 auto;
   max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-`;
+  margin: 0 auto;
 
-export const InitialContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
-
-  strong {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 80px;
+  header {
+    margin-bottom: 34px;
   }
 
-  aside {
+  header + div {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+
+    a {
+      padding: 0px 16px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+      background: #7f40e7;
+      transition: background 300ms;
+      border-radius: 4px;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 36px;
+
+      svg {
+        margin-right: 4px;
+      }
+
+      &:hover {
+        background: ${darken(0.2, '#7D40e7')};
+      }
+    }
   }
 `;
 
-export const DeliverymensList = styled.table`
-  margin-top: 22px;
-  width: 100%;
-  border-spacing: 0px 20px;
+export const LastItem = styled.span`
+  display: flex;
+  justify-content: center;
+`;
 
-  td {
-    padding-left: 20px;
-    color: #707070;
-  }
+export const OptionsContainer = styled.span`
+  position: relative;
+`;
 
-  td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
+export const Badge = styled.button`
+  padding: 14px 28px;
+  background: none;
+  border: 0;
+  position: relative;
+  align-content: center;
 
-  td:nth-child(2) {
-    width: 30%;
-    text-align: center;
-  }
-
-  td:last-child {
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
+  &:hover {
+    background: ${darken(0.1, '#fff')};
   }
 `;
-export const DeliverymenHeader = styled.tr`
-  th {
-    text-align: left;
-    padding-left: 20px;
-    font-size: 18px;
-    color: #444;
+
+export const Button = styled.button`
+  background: none;
+  border: 0;
+  position: relative;
+  align-self: center;
+  display: flex;
+  flex: 1;
+
+  &:hover {
+    background: ${darken(0.1, '#fff')};
   }
-  th:last-child {
-    text-align: center;
+`;
+
+export const OptionsList = styled.span`
+  position: absolute;
+  z-index: 100;
+  width: 150px;
+  left: calc(50% - 73px);
+  top: 100%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 5px;
+  display: ${(props) => (props.visible ? 'block' : 'none')};
+  &::before {
+    content: '▲';
+    position: absolute;
+    left: 71px;
+    top: -13px;
+    width: 0;
+    height: 0;
+    color: #fff;
+    text-shadow: 1px 0 0 rgba(0, 0, 0, 0.25);
   }
-  th:nth-child(2) {
-    text-align: center;
+`;
+
+export const Option = styled.span`
+  display: flex;
+  align-content: center;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-bottom: 1px solid #eeeeee;
+
+  svg {
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
+
+  p {
+    font-size: 16px;
+    margin-left: 14px;
+    font-weight: lighter;
+    color: #999999;
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
+`;
+
+export const LastOption = styled.span`
+  display: flex;
+  align-content: center;
+  margin-right: 10px;
+  margin-left: 10px;
+
+  svg {
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
+
+  p {
+    font-size: 16px;
+    margin-left: 14px;
+    font-weight: lighter;
+    color: #999999;
+    margin-bottom: 6px;
+    margin-top: 6px;
   }
 `;

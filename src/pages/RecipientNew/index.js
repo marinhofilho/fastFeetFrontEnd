@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
+import {PropTypes} from 'prop-types';
 
 import { toast } from 'react-toastify';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
+import { PageTitle } from '~/styles/PageTitle';
 import Input from '~/components/Input';
 
 import api from '~/services/api';
 import history from '~/services/history';
 import Loading from '~/components/Loading';
 
-import { Container, Button, InitialContent, Form, PageContent } from './styles';
+import { Container, Button, Form, Card } from './styles';
 
 export default function RecipientNew({ match }) {
   const id = match.params.id ? decodeURIComponent(match.params.id) : null;
@@ -20,7 +21,7 @@ export default function RecipientNew({ match }) {
   useEffect(() => {
     async function getRecipient() {
       try {
-        const { data } = await api.get(`recipients/${id}`);
+        const { data } = await api.get(`recipient/${id}`);
         setRecipient(data);
       } catch (err) {
         toast.error('Não foi possível localizar este destinatário');
@@ -54,7 +55,7 @@ export default function RecipientNew({ match }) {
       try {
         await api.put(`recipients/${id}`, data);
         toast.success('Destinatário alterado com sucesso!');
-        history.push('/recipients');
+        history.push('/recipient');
       } catch (err) {
         toast.error(
           'Não foi possível realizar a alteração, verifique seus dados'
@@ -81,9 +82,8 @@ export default function RecipientNew({ match }) {
       ) : (
         <>
           <Form schema={schema} onSubmit={handleSubmit}>
-            <InitialContent>
-              <strong>Cadastro de Destinatários</strong>
-              <aside>
+            <header>
+              <PageTitle>{recipient ? 'Edição de Destinário' : 'Cadastro de Destinatários'}</PageTitle>
                 <Button type="button" onClick={handleGoBack}>
                   <MdKeyboardArrowLeft size={24} />
                   Voltar
@@ -92,52 +92,51 @@ export default function RecipientNew({ match }) {
                   <MdDone size={24} />
                   Salvar
                 </Button>
-              </aside>
-            </InitialContent>
-            <PageContent>
+            </header>
+            <Card>
               <Input
                 type="text"
                 placeholder="Ludwig van Beethoven"
-                label="Nome"
+                title="Nome"
                 name="name"
               />
               <Input
                 type="text"
                 placeholder="Rua das Flores"
-                label="Rua"
+                title="Rua"
                 name="street"
               />
               <Input
                 type="number"
                 placeholder="01234"
-                label="Numero"
+                title="Numero"
                 name="number"
               />
               <Input
                 type="text"
                 placeholder="Apto 01"
-                label="Complemento"
+                title="Complemento"
                 name="addition"
               />
               <Input
                 type="text"
                 placeholder="Bauru"
-                label="Cidade"
+                title="Cidade"
                 name="city"
               />
               <Input
                 type="text"
                 placeholder="São Paulo"
-                label="Estado"
+                title="Estado"
                 name="state"
               />
               <Input
                 type="number"
                 placeholder="88888888"
-                label="Cep"
+                title="Cep"
                 name="cep"
               />
-            </PageContent>
+            </Card>
           </Form>
         </>
       )}

@@ -30,10 +30,19 @@ export default function Routes() {
         component={DeliverymenNew}
         isPrivate
       />
+
+      <Route
+        path="/deliverymen/edit/:id"
+        exact
+        component={DeliverymenNew}
+        isPrivate
+      />
       <Route path="/deliverymen" exact component={Deliverymens} isPrivate />
 
-      <Route path="/recipient/new" exact component={RecipientNew} isPrivate />
-      <Route path="/recipient" exact component={Recipients} isPrivate />
+      <Route path="/recipients/new" exact component={RecipientNew} isPrivate />
+      <Route path="/recipients" exact component={Recipients} isPrivate />
+      <Route path="/recipient/edit/:id" exact component={RecipientNew} isPrivate />
+
 
       <Route path="/problems" exact component={Problems} isPrivate />
     </Switch>
