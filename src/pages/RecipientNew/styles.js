@@ -68,6 +68,14 @@ export const Card = styled.div`
     &:nth-child(2) {
       width: 50%;
     }
+    &:nth-child(3),
+    &:nth-child(6) {
+      width: 15%;
+    },
+    &:nth-child(4),
+    &:nth-child(5) {
+      width: 35%;
+    }
     &:last-child {
       width: 100%;
     }

@@ -4,12 +4,9 @@ import Modal from 'react-modal';
 import { MdMoreHoriz, MdDeleteForever, MdRemoveRedEye } from 'react-icons/md';
 
 import { toast } from 'react-toastify';
+import { PageTitle } from '~/styles/PageTitle'
 import {
   Container,
-  InitialContent,
-  ListHead,
-  ProblemsList,
-  DataContainer,
   LastItem,
   OptionsContainer,
   Badge,
@@ -23,6 +20,7 @@ import {
 
 import api from '~/services/api';
 
+import Table from '~/components/Table';
 import Loading from '~/components/Loading';
 
 export default function Problems() {
@@ -88,21 +86,21 @@ export default function Problems() {
         <Loading />
       ) : (
         <>
-          <InitialContent>
-            <strong>Gerenciando Problemas</strong>
-          </InitialContent>
-          <ProblemsList>
+          <header>
+            <PageTitle>Gerenciando Problemas</PageTitle>
+          </header>
+          <Table>
             <thead>
-              <ListHead>
+              <tr>
                 <th>Encomenda</th>
                 <th>Problema</th>
                 <th>Ações</th>
-              </ListHead>
+              </tr>
             </thead>
 
             <tbody>
               {problems.map((problem) => (
-                <DataContainer updateProblems={updateProblems} key={problem.id}>
+                <tr updateProblems={updateProblems} key={problem.id}>
                   {problem.order && problem.order_id ? (
                     <td>#{problem.order_id}</td>
                   ) : (
@@ -177,10 +175,10 @@ export default function Problems() {
                       </OptionsContainer>
                     </LastItem>
                   </td>
-                </DataContainer>
+                </tr>
               ))}
             </tbody>
-          </ProblemsList>
+          </Table>
         </>
       )}
     </Container>

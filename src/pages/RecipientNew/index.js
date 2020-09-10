@@ -19,20 +19,21 @@ export default function RecipientNew({ match }) {
   const [recipient, setRecipient] = useState(null);
 
   useEffect(() => {
-    async function getRecipient() {
+
+    async function getRecipient(){
       try {
-        const { data } = await api.get(`recipient/${id}`);
-        setRecipient(data);
-      } catch (err) {
-        toast.error('Não foi possível localizar este destinatário');
+        if(id){
+          const { data} = await api.get(`recipient/${id}`);
+          setRecipient(data);
+        }
+      } catch (err){
+        toast.error('Falha ao carregar destinatário');
         history.push('/recipients');
       }
     }
-
-    if (id) {
-      getRecipient();
-    }
-  }, [id]);
+    getRecipient();
+    }, [id]);
+    
 
   function handleGoBack() {
     history.push('/recipients');
@@ -43,11 +44,11 @@ export default function RecipientNew({ match }) {
     street: Yup.string().required(
       'É preciso informar o endereço do destinatário'
     ),
-    number: Yup.number().required('É preciso informar o número do endereço'),
+    number: Yup.number('Digite um número').required('É preciso informar o número do endereço'),
     addition: Yup.string(),
     state: Yup.string().required('É preciso informar o estado do destinatário'),
     city: Yup.string().required('É preciso informar a cidade do destinatário'),
-    cep: Yup.number(),
+    cep: Yup.number('Informe um CEP válido').required('Informe um CEP'),
   });
 
   async function handleSubmit(data) {
@@ -55,7 +56,7 @@ export default function RecipientNew({ match }) {
       try {
         await api.put(`recipients/${id}`, data);
         toast.success('Destinatário alterado com sucesso!');
-        history.push('/recipient');
+        history.push('/recipients');
       } catch (err) {
         toast.error(
           'Não foi possível realizar a alteração, verifique seus dados'
@@ -81,7 +82,7 @@ export default function RecipientNew({ match }) {
         <Loading />
       ) : (
         <>
-          <Form schema={schema} onSubmit={handleSubmit}>
+          <Form schema={schema} onSubmit={handleSubmit} initialData={recipient || undefined}>
             <header>
               <PageTitle>{recipient ? 'Edição de Destinário' : 'Cadastro de Destinatários'}</PageTitle>
                 <Button type="button" onClick={handleGoBack}>
@@ -103,7 +104,7 @@ export default function RecipientNew({ match }) {
               <Input
                 type="text"
                 placeholder="Rua das Flores"
-                title="Rua"
+                title="Logradouro"
                 name="street"
               />
               <Input

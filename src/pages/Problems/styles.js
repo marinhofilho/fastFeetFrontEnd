@@ -2,59 +2,10 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 export const Container = styled.div`
-  padding-top: 10px;
-  margin: 0 auto;
   max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const InitialContent = styled.div`
-  margin-top: 20px;
-
-  font-size: 24px;
-`;
-
-export const ProblemsList = styled.table`
-  margin-top: 22px;
-  width: 100%;
-  border-spacing: 0px 20px;
-
-  td {
-    padding-left: 20px;
-    color: #707070;
-  }
-
-  td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    width: 15%;
-  }
-
-  td:last-child {
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
-  }
-`;
-
-export const ListHead = styled.tr`
-  th {
-    text-align: left;
-    padding-left: 20px;
-    font-size: 18px;
-    color: #444;
-  }
-  th:last-child {
-    text-align: center;
-  }
-`;
-
-export const DataContainer = styled.tr`
-  height: 44px;
-  background-color: #fff;
-
-  td:last-child {
-    width: 15%;
+  margin: 0 auto;
+  header {
+    margin-bottom: 34px;
   }
 `;
 

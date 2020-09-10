@@ -104,7 +104,7 @@ export default function Recipients({ recipient }) {
           </header>
             <div>
               <SearchInput onChange={onChange} placeholder="destinatário" />
-              <Link to="/recipient/new">
+              <Link to="/recipients/new">
               <MdAdd color="#FFFFFF" size={36} />
               Cadastrar
               </Link>            
@@ -127,7 +127,7 @@ export default function Recipients({ recipient }) {
                   <td>#{recipient.id}</td>
                   <td>{recipient.name}</td>
                   <td>
-                    Rua {recipient.street},&#160;
+                    {recipient.street},&#160;
                     {recipient.number},&#160;
                     {recipient.addition},&#160;
                     {recipient.state},&#160;
