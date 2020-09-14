@@ -87,7 +87,7 @@ export default function Problems() {
       ) : (
         <>
           <header>
-            <PageTitle>Gerenciando Problemas</PageTitle>
+            <PageTitle>Gerenciamento de problemas</PageTitle>
           </header>
           <Table>
             <thead>

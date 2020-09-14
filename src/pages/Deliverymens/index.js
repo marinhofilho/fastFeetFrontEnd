@@ -90,7 +90,7 @@ export default function Deliverymens() {
       ) : (
         <>
           <header>
-            <PageTitle>Gerenciando entregadores</PageTitle>
+            <PageTitle>Gerenciamento de entregadores</PageTitle>
           </header>
 
           <div>

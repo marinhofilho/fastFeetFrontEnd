@@ -39,6 +39,33 @@ export const Container = styled.div`
   }
 `;
 
+export const DeliverymenImg = styled.td`
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  height: auto !important
+`
+export const LetterAvatar = styled.span`
+  background: ${(props) => props.color};
+  color: ${(props) => darken(0.3, props.color)};
+  width: 36px;
+  heigth: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+`
+
+export const Avatar = styled.img`
+width: 36px;
+height: 36px;
+line-height: 36px;
+border-radius: 50%;
+margin-right: 5px;
+display: inline-block;
+`
+
 export const OrderStatus = styled.span`
   background: ${(props) => props.color};
   color: ${(props) => darken(0.4, props.color)};

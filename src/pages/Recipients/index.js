@@ -100,7 +100,7 @@ export default function Recipients({ recipient }) {
       ) : (
         <>
           <header>
-            <PageTitle>Gerenciando Destinatários</PageTitle>
+            <PageTitle>Gerenciamento de destinatários</PageTitle>
           </header>
             <div>
               <SearchInput onChange={onChange} placeholder="destinatário" />

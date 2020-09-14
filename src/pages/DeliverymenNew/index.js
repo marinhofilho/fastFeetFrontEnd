@@ -87,7 +87,7 @@ export default function DeliverymenNew({ match }) {
               <PageTitle>
                 {deliverymen
                   ? 'Edição de entregadores'
-                  : 'Cadastro de Entregadores'}
+                  : 'Cadastro de entregadores'}
               </PageTitle>
               <Button type="button" onClick={handleGoBack}>
                 <MdKeyboardArrowLeft size={24} />

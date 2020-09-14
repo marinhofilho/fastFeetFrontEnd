@@ -16,7 +16,6 @@ export default function OrderNew({ match }) {
   /* react-router-dom passes a prop - match - in every route that is rendered.
   inside the match object there is a params object
   there we find the :id - key - that was put in the route creation */
-
   const [order, setOrder] = useState(null);
   const [recipients, setRecipients] = useState([]);
   const [deliverymen, setDeliverymen] = useState([]);
@@ -40,11 +39,13 @@ export default function OrderNew({ match }) {
         if (id) {
           const { data } = await api.get(`orders/${id}`);
           setOrder(data);
-          // code below works because of models relation
+          // code below works because of models relations
           setSelectedRecipient(data.recipient);
           setSelectedDeliveryman(data.deliverymen);
+          
         }
       } catch (err) {
+        history.push('/orders');
         toast.error('Falha ao carregar dados');
       }
     }
@@ -70,8 +71,8 @@ export default function OrderNew({ match }) {
   // both recipient and deliverymen inputs only accept pre-existing data
   const handleChangeRecipient = (selectedOption) => {
     const { value } = selectedOption;
-
     setSelectedRecipient(value);
+    
   };
 
   const handleChangeDeliveryman = (selectedOption) => {
@@ -86,6 +87,7 @@ export default function OrderNew({ match }) {
   async function handleSubmit(data) {
     if (!selectedRecipient || !selectedDeliveryman || !data.product) {
       toast.error('Preencha todo o formulário');
+      return
     }
     // picks data from the inputs and make then "postable/editable" on the backend
     data.recipient_id = selectedRecipient.id;
@@ -114,7 +116,7 @@ export default function OrderNew({ match }) {
     }
   }
 
-  // handle edition of unexistent order
+  /* handle edition of unexistent order
   if (id && !order) {
     return (
       <EmptyOrder>
@@ -127,13 +129,14 @@ export default function OrderNew({ match }) {
       </EmptyOrder>
     );
   }
+  // unecessary due to error catch in loadData() */
 
   return (
     // form originates the data that is passed in handlesubmit
     <Form onSubmit={handleSubmit} initialData={order || undefined}>
       <header>
         <PageTitle>
-          {order ? 'Editar encomenda' : 'Cadastrar encomenda'}
+          {order ? 'Edição de encomenda' : 'Cadastro de encomenda'}
         </PageTitle>
         <Button type="button" onClick={handleGoBack}>
           <MdKeyboardArrowLeft size={24} />

@@ -1,3 +1,15 @@
+/* to be fixed: 
+- Ações renderizando todos os td de uma vez
+https://github.com/ricardobron/FastFeet/blob/master/web/src/pages/Orders/OrderList/index.js
+
+- Avatar do entregador
+  alinhamento e teste com foto
+
+- editar encomenda não seta os nomes (recipient e deliverymen) como placeholder nem selected
+
+*/
+
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { formatDistanceToNow, format, parseISO } from 'date-fns';
@@ -24,6 +36,9 @@ import { orderStatus } from '~/styles/colors';
 
 import {
   Container,
+  DeliverymenImg,
+  Avatar,
+  LetterAvatar,
   OrderStatus,
   LastItem,
   OptionsContainer,
@@ -36,6 +51,8 @@ import {
   LastOption,
   ImageContainer,
 } from './styles';
+
+import { createLetterAvatar } from '~/util/letterAvatar';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -60,54 +77,50 @@ export default function Orders() {
       return timeElapsed;
     }
 
-    return data.map((order) => {
-      if (order.canceled_at)
+    return data.map((order, index) => {
+
+      if (order.deliverymen) {
+        order.deliverymen.letterAvatar = createLetterAvatar(order.deliverymen.name, index)
+      }
+
+    if (order.canceled_at) {
         order.status = {
           color: orderStatus.canceled,
           text: 'CANCELADA',
+          timeCanceled: `Produto cancelado há ${takeOutDate(order.canceled_at)} - ${format(
+            parseISO(order.canceled_at),
+            'dd/MM/yyyy'
+          )}`
         };
-      else if (order.end_date)
+      }
+      else if (order.end_date) {
         order.status = {
           color: orderStatus.delivered,
           text: 'ENTREGUE',
+          timeFinished: format(parseISO(order.end_date), 'dd/MM/yyyy')
         };
-      else if (order.start_date)
+      }        
+      else if (order.start_date) {
         order.status = {
           color: orderStatus.takeout,
           text: 'RETIRADA',
+          timeTakeout: `Produto retirado há ${takeOutDate(order.start_date)} - ${format(
+            parseISO(order.start_date),
+            'dd/MM/yyyy'
+          )}`
         };
+      }        
       else {
         order.status = {
           color: orderStatus.pending,
           text: 'PENDENTE',
-        };
-      }
-
-      const created_at = order.created_at
-        ? `Pedido feito há ${takeOutDate(order.created_at)} - ${format(
+          timePending: 'Produto ainda não retirado',
+          timePassed: `Produto cadastrado há ${takeOutDate(order.created_at)} - ${format(
             parseISO(order.created_at),
             'dd/MM/yyyy'
           )}`
-        : null;
-
-      const canceled_at = order.canceled_at
-        ? `Produto cancelado há ${takeOutDate(order.canceled_at)} - ${format(
-            parseISO(order.canceled_at),
-            'dd/MM/yyyy'
-          )}`
-        : null;
-      console.log(canceled_at);
-
-      const start_date = order.start_date
-        ? `Produto retirado há ${takeOutDate(order.start_date)} - ${format(
-            parseISO(order.start_date),
-            'dd/MM/yyyy'
-          )}`
-        : 'Produto não foi retirado';
-
-      const end_date = order.end_date
-        ? format(parseISO(order.end_date), 'dd/MM/yyyy')
-        : 'Produto não foi entregue ';
+        };
+      }
 
       return order;
     });
@@ -131,7 +144,7 @@ export default function Orders() {
     setLoading(true);
 
     const response = await api.get('orders');
-    const { data } = response;
+    const data = parserOrders(response.data);
 
     setOrders(data);
     setLoading(false);
@@ -142,8 +155,8 @@ export default function Orders() {
       `orders?searchproduct=${event.target.value}`
     );
 
-    const { data } = response;
-
+    const data = parserOrders(response.data);
+    
     setOrders(data);
   }
 
@@ -168,7 +181,6 @@ export default function Orders() {
       updateOrders();
       toast.success('Encomenda excluída com sucesso.');
     } catch (err) {
-      console.tron.log(err);
       toast.error('Erro ao excluir encomenda.');
     }
   }
@@ -180,7 +192,7 @@ export default function Orders() {
       ) : (
         <>
           <header>
-            <PageTitle>Gerenciando Encomendas</PageTitle>
+            <PageTitle>Gerenciamento de pedidos</PageTitle>
           </header>
           <div>
             <SearchInput onChange={onChange} placeholder="encomenda" />
@@ -202,7 +214,7 @@ export default function Orders() {
               </tr>
             </thead>
             <tbody>
-              {orders.map(({ status, ...order }) => (
+              {orders.map(({ deliverymen, status, ...order }) => (
                 <tr key={order.id}>
                   <td>#{order.id}</td>
                   {order.recipient && order.recipient.name ? (
@@ -210,12 +222,25 @@ export default function Orders() {
                   ) : (
                     <td>Não cadastrado</td>
                   )}
-
-                  {order.deliverymen && order.deliverymen.name ? (
-                    <td> {order.deliverymen.name} </td>
-                  ) : (
-                    <td>Não cadastrado</td>
-                  )}
+                 
+                    {deliverymen ?
+                      <DeliverymenImg>
+                        {deliverymen && (
+                          <>
+                          {deliverymen.avatar_id ? (
+                            <Avatar src={deliverymen.avatar_id.url} />
+                          ) : (
+                            <LetterAvatar color={deliverymen?.letterAvatar.color}>
+                              {deliverymen?.letterAvatar.letters}
+                            </LetterAvatar>
+                          )}
+                          {deliverymen.name}
+                          </>
+                        )}
+                        </DeliverymenImg> : (
+                          <td>Não cadastrado</td>
+                        )
+                    }
                   {/* <td>{order.deliverymen.name}</td>
                   this one breaks if the deliverymen is deleted.
                   the working version needs to check if there is a deliverymen first
@@ -224,7 +249,7 @@ export default function Orders() {
                   {order.recipient && order.recipient.city ? (
                     <td>{order.recipient.city}</td>
                   ) : (
-                    <td>Não cadastrado</td>
+                    <td>Não cadastrada</td>
                   )}
                   {order.recipient && order.recipient.state ? (
                     <td>{order.recipient.state}</td>
@@ -306,20 +331,20 @@ export default function Orders() {
                                   <Title>Datas</Title>
                                   <div>
                                     <strong>Cadastro: </strong>
-                                    <span>{formattedDates.created_at}</span>
+                                    <span>{status.timeCanceled || status.timePassed}</span>
+                                  {/* {console.log(status.timeCanceled || status.timePassed)} */}
                                   </div>
                                   <div>
                                     <strong>Retirada: </strong>
                                     <span>
-                                      {formattedDates.canceled_at ||
-                                        formattedDates.start_date}
+                                      {status.timeTakeout || status.timePending}
+                                      {/*  {console.log(status.timeTakeout)} */}
                                     </span>
                                   </div>
                                   <div>
                                     <strong>Entrega: </strong>
                                     <span>
-                                      {formattedDates.canceled_at ||
-                                        formattedDates.end_date}
+                                      {status.timeFinished || status.timePending}
                                     </span>
                                   </div>
                                 </aside>

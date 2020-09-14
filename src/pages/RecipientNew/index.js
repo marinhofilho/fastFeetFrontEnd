@@ -84,7 +84,7 @@ export default function RecipientNew({ match }) {
         <>
           <Form schema={schema} onSubmit={handleSubmit} initialData={recipient || undefined}>
             <header>
-              <PageTitle>{recipient ? 'Edição de Destinário' : 'Cadastro de Destinatários'}</PageTitle>
+              <PageTitle>{recipient ? 'Edição de destinário' : 'Cadastro de destinatários'}</PageTitle>
                 <Button type="button" onClick={handleGoBack}>
                   <MdKeyboardArrowLeft size={24} />
                   Voltar
