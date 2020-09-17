@@ -9,13 +9,13 @@ export default function SearchInput({ onChange, placeholder, ...rest }) {
   return (
     <Container>
       <div>
+      <FontAwesomeIcon icon={faSearch} className="icon" />
         <input
           type="text"
           placeholder={`Buscar ${placeholder}`}
           onChange={(event) => onChange(event)}
           {...rest}
         />
-        <FontAwesomeIcon icon={faSearch} className="icon" />
       </div>
     </Container>
   );

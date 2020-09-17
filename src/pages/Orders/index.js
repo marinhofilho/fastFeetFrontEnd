@@ -1,14 +1,4 @@
-/* to be fixed: 
-- Ações renderizando todos os td de uma vez
-https://github.com/ricardobron/FastFeet/blob/master/web/src/pages/Orders/OrderList/index.js
-
-- Avatar do entregador
-  alinhamento e teste com foto
-
-- editar encomenda não seta os nomes (recipient e deliverymen) como placeholder nem selected
-
-*/
-
+// search input makes avatar letter crash
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
@@ -19,17 +9,17 @@ import {
   MdRemoveRedEye,
   MdEdit,
   MdDeleteForever,
-  MdMoreHoriz,
 } from 'react-icons/md';
 
 import { toast } from 'react-toastify';
-import Modal from 'react-modal';
 import history from '~/services/history';
 import api from '~/services/api';
 
 import Loading from '~/components/Loading';
 import SearchInput from '~/components/SearchInput';
 import Table from '~/components/Table';
+import Actions from '~/components/Actions'
+import LookOrder from './LookOrder'
 
 import { PageTitle } from '~/styles/PageTitle';
 import { orderStatus } from '~/styles/colors';
@@ -40,27 +30,15 @@ import {
   Avatar,
   LetterAvatar,
   OrderStatus,
-  LastItem,
-  OptionsContainer,
-  Badge,
-  OptionsList,
-  Option,
   Button,
-  ModalContainer,
-  Title,
-  LastOption,
-  ImageContainer,
 } from './styles';
 
 import { createLetterAvatar } from '~/util/letterAvatar';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
+  const [looking, setLooking] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({});
-  const [visible, setVisible] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [formattedDates, setFormattedDates] = useState({});
 
   /* useCallBack receives a callback and an array as arguments
     returns a version of the callback that only changes if one of
@@ -78,10 +56,16 @@ export default function Orders() {
     }
 
     return data.map((order, index) => {
+      // possible change for a 'for...in' loop?
+    
+      order.idText = order.id > 9 ? `#${order.id}` : `#0${order.id}`
 
       if (order.deliverymen) {
+        console.log(order.deliverymen.name)
         order.deliverymen.letterAvatar = createLetterAvatar(order.deliverymen.name, index)
       }
+      console.log(order.deliverymen.letterAvatar)
+
 
     if (order.canceled_at) {
         order.status = {
@@ -90,41 +74,55 @@ export default function Orders() {
           timeCanceled: `Produto cancelado há ${takeOutDate(order.canceled_at)} - ${format(
             parseISO(order.canceled_at),
             'dd/MM/yyyy'
-          )}`
+          )}.`
+        };
+      }
+      else if (order.start_date) {
+        order.status = {
+          color: orderStatus.takeout,
+          text: 'RETIRADA',
+          timePassed: `Produto cadastrado há ${takeOutDate(order.created_at)} - ${format(
+            parseISO(order.created_at),
+            'dd/MM/yyyy'
+          )}`,
+          timeTakeout: `Produto retirado há ${takeOutDate(order.start_date)} - ${format(
+            parseISO(order.start_date),
+            'dd/MM/yyyy'
+          )}`,
+          notDone: 'Em processamento.',
         };
       }
       else if (order.end_date) {
         order.status = {
           color: orderStatus.delivered,
           text: 'ENTREGUE',
-          timeFinished: format(parseISO(order.end_date), 'dd/MM/yyyy')
-        };
-      }        
-      else if (order.start_date) {
-        order.status = {
-          color: orderStatus.takeout,
-          text: 'RETIRADA',
+          timePassed: `Produto cadastrado há ${takeOutDate(order.created_at)} - ${format(
+            parseISO(order.created_at),
+            'dd/MM/yyyy'
+          )}`,
           timeTakeout: `Produto retirado há ${takeOutDate(order.start_date)} - ${format(
             parseISO(order.start_date),
             'dd/MM/yyyy'
-          )}`
+          )}`,
+          timeFinished: `Produto entregue há  ${takeOutDate(order.end_date)} - ${format(parseISO(order.end_date), 'dd/MM/yyyy')}.`
         };
-      }        
+      }               
       else {
         order.status = {
           color: orderStatus.pending,
           text: 'PENDENTE',
-          timePending: 'Produto ainda não retirado',
           timePassed: `Produto cadastrado há ${takeOutDate(order.created_at)} - ${format(
             parseISO(order.created_at),
             'dd/MM/yyyy'
-          )}`
+          )}`,
+          timePending: 'Produto ainda não retirado.',
+          notDone: 'Produto ainda não retirado.'
         };
       }
-
       return order;
     });
   }, []);
+  // empty array in the end means it will be executed only one time
 
   useEffect(() => {
     async function loadOrders() {
@@ -139,6 +137,9 @@ export default function Orders() {
 
     loadOrders();
   }, [parserOrders]);
+  // it only executes when parserOrders is executed/changed
+  // empty array in the end means it will be executed only one time
+  // without the array it is always executed
 
   async function updateOrders() {
     setLoading(true);
@@ -149,6 +150,7 @@ export default function Orders() {
     setOrders(data);
     setLoading(false);
   }
+  // probably violating DRY
 
   async function onChange(event) {
     const response = await api.get(
@@ -160,11 +162,11 @@ export default function Orders() {
     setOrders(data);
   }
 
-  function handleToggleVisible() {
-    setVisible(!visible);
-  }
+  const handleLook = useCallback((order) => {
+    setLooking(order);
+  }, []);
 
-  async function handleDelete(id) {
+  async function handleDelete(order) {
     // eslint-disable-next-line no-alert
     const confirm = window.confirm(
       'Você tem certeza que quer deletar este pedido?'
@@ -172,14 +174,12 @@ export default function Orders() {
     // ok returns true (1)
     // cancel return false (0)
 
-    if (!confirm) {
-      return;
-    }
+    if (!confirm) return
 
     try {
-      await api.delete(`orders/${id}`);
+      await api.delete(`orders/${order.id}`);
       updateOrders();
-      toast.success('Encomenda excluída com sucesso.');
+      toast.success(`Encomenda '${order.idText}' do produto '${order.product}' foi excluída com sucesso`);
     } catch (err) {
       toast.error('Erro ao excluir encomenda.');
     }
@@ -215,14 +215,21 @@ export default function Orders() {
             </thead>
             <tbody>
               {orders.map(({ deliverymen, status, ...order }) => (
+                /* deliverymen shows despite not having express mention in a
+                function above. Probably because of models relations */
                 <tr key={order.id}>
-                  <td>#{order.id}</td>
-                  {order.recipient && order.recipient.name ? (
+                  <td>{order.idText}</td>
+                  {/* order.recipient && order.recipient.name*/}
+                  {order.recipient?.name ? (
                     <td>{order.recipient.name}</td>
                   ) : (
                     <td>Não cadastrado</td>
                   )}
-                 
+                  {/* <td>{order.deliverymen.name}</td>
+                  this one breaks if the deliverymen is deleted.
+                  the working version needs to check if there is a deliverymen first
+                  'order.deliverymen' and not just the value it searches (in the example 'name')
+                   */}
                     {deliverymen ?
                       <DeliverymenImg>
                         {deliverymen && (
@@ -241,17 +248,13 @@ export default function Orders() {
                           <td>Não cadastrado</td>
                         )
                     }
-                  {/* <td>{order.deliverymen.name}</td>
-                  this one breaks if the deliverymen is deleted.
-                  the working version needs to check if there is a deliverymen first
-                  'order.deliverymen' and not just the value it searches (in the example 'name')
-                   */}
-                  {order.recipient && order.recipient.city ? (
+                  {/* order.recipient && order.recipient.city*/}
+                  {order.recipient?.city ? (
                     <td>{order.recipient.city}</td>
                   ) : (
                     <td>Não cadastrada</td>
                   )}
-                  {order.recipient && order.recipient.state ? (
+                  {order.recipient?.state ? (
                     <td>{order.recipient.state}</td>
                   ) : (
                     <td>Não cadastrado</td>
@@ -262,138 +265,43 @@ export default function Orders() {
                     </OrderStatus>
                   </td>
                   <td>
-                    <LastItem>
-                      <OptionsContainer>
-                        <Badge onClick={handleToggleVisible}>
-                          <MdMoreHoriz color="#333" size={25} />
-                        </Badge>
-                        <OptionsList visible={visible}>
-                          <Option>
+                    <Actions>
                             <Button
                               onClick={() => {
-                                handleToggleVisible();
-                                setModalOpen(true);
+                                handleLook({ ...order, status });
                               }}
                             >
-                              <MdRemoveRedEye color="#8E5BE8" size={16} />
+                              <MdRemoveRedEye color="#8E5BE8" size={24} />
                               <p>Visualizar</p>
                             </Button>
-                            <Modal
-                              isOpen={modalOpen}
-                              onRequestClose={() => {
-                                setModalOpen(false);
-                              }}
-                              ariaHideApp={false}
-                              shouldCloseOnOverlayClick
-                              shouldCloseOnEsc
-                              shouldReturnFocusAfterClose
-                              style={{
-                                overlay: {
-                                  background: 'Rgba(0,0,0,0.4)',
-                                },
-                                content: {
-                                  background: '#fff',
-                                  width: 450,
-                                  top: '50%',
-                                  left: '50%',
-                                  right: 'auto',
-                                  bottom: 'auto',
-                                  marginRight: '-50%',
-                                  transform: 'translate(-50%, -50%)',
-                                  // transform can be use to change position, rotation, scale and more of elements
-                                },
-                              }}
-                            >
-                              <ModalContainer>
-                                <div>
-                                  <Title>Informações da encomenda</Title>
-                                  <span>
-                                    <strong>Produto: </strong>
-                                    {order.product}
-                                  </span>
-                                  {order.recipient ? (
-                                    <>
-                                      <span>
-                                        {order.recipient.street},{' '}
-                                        {order.recipient.number}
-                                      </span>
-                                      <span>
-                                        {order.recipient.city} -{' '}
-                                        {order.recipient.state}
-                                      </span>
-                                      <span>{order.recipient.cep}</span>
-                                    </>
-                                  ) : (
-                                    <span>Não cadastrado</span>
-                                  )}
-                                </div>
-                                <aside>
-                                  <Title>Datas</Title>
-                                  <div>
-                                    <strong>Cadastro: </strong>
-                                    <span>{status.timeCanceled || status.timePassed}</span>
-                                  {/* {console.log(status.timeCanceled || status.timePassed)} */}
-                                  </div>
-                                  <div>
-                                    <strong>Retirada: </strong>
-                                    <span>
-                                      {status.timeTakeout || status.timePending}
-                                      {/*  {console.log(status.timeTakeout)} */}
-                                    </span>
-                                  </div>
-                                  <div>
-                                    <strong>Entrega: </strong>
-                                    <span>
-                                      {status.timeFinished || status.timePending}
-                                    </span>
-                                  </div>
-                                </aside>
-                                <Title>Assinatura do destinatário </Title>
-                                <div>
-                                  <ImageContainer>
-                                    <br />
-                                    {order.signature_id ? (
-                                      <img
-                                        src={order.signature.url}
-                                        alt="assinatura"
-                                      />
-                                    ) : (
-                                      <span>Não possui assinatura</span>
-                                    )}
-                                  </ImageContainer>
-                                </div>
-                              </ModalContainer>
-                            </Modal>
-                          </Option>
-                          <Option>
                             <Button
                               onClick={() => {
                                 history.push(`/orders/edit/${order.id}`);
                               }}
                             >
-                              <MdEdit color="#4D85EE" size={16} />
+                              <MdEdit color="#4D85EE" size={24} />
                               <p>Editar</p>
                             </Button>
-                          </Option>
-                          <LastOption>
                             <Button
                               onClick={() => {
-                                handleToggleVisible();
-                                handleDelete(order.id);
+                                handleDelete(order);
                               }}
                             >
-                              <MdDeleteForever color="#DE3B3B" size={16} />
+                              <MdDeleteForever color="#DE3B3B" size={24} />
                               <p>Excluir</p>
                             </Button>
-                          </LastOption>
-                        </OptionsList>
-                      </OptionsContainer>
-                    </LastItem>
+                    </Actions>
                   </td>
                 </tr>
               ))}
             </tbody>
           </Table>
+          {looking && (
+            <LookOrder
+            order={looking}
+            closeCallback={() => setLooking(null)}
+          />
+          )}
         </>
       )}
     </Container>

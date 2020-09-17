@@ -10,7 +10,7 @@ export const Container = styled.div`
 
   .icon {
     position: relative;
-    right: 28px;
+    left: 26px;
     font-size: 18px;
   }
 
@@ -20,9 +20,10 @@ export const Container = styled.div`
     border: 0;
     border-radius: 4px;
     padding: 15px;
+    padding-left: 34px;
 
     &:hover {
-      background: ${darken(0.09, '#fff')};
+      background: ${darken(0.09, '#f4f4f4')};
     }
   }
   input::placeholder {

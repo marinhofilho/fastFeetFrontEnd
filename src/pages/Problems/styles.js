@@ -7,6 +7,12 @@ export const Container = styled.div`
   header {
     margin-bottom: 34px;
   }
+
+  table tbody td:nth-child(2) {
+    overflow: hidden;
+    max-width: 150ch;
+    white-space: nowrap;
+  }
 `;
 
 export const LastItem = styled.span`
