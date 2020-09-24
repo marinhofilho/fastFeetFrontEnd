@@ -18,8 +18,8 @@ export default function SelectComponent({
     control: () => ({
       display: 'flex',
       border: '1px solid #ccc',
-      borderRadius: 4,
-      height: 45,
+      borderRadius: '4px',
+      height: '45px',
       width: '100%',
       padding: '0 7px',
       color: '#999',
@@ -27,13 +27,14 @@ export default function SelectComponent({
     option: (provided, state) => ({
       ...provided,
       color: state.isSelected ? '#fff' : '#999',
-      padding: 10,
+      padding: '10px',
     }),
     singleValue: (provided) => {
       const color = '#999';
       return { ...provided, color };
     },
   };
+
 
   return (
     <Container>

@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { MdAdd, MdEdit, MdDeleteForever, MdMoreHoriz } from 'react-icons/md';
+import {
+  MdAdd,
+  MdEdit,
+  MdDeleteForever,
+} from 'react-icons/md';
 
 import { toast } from 'react-toastify';
 import history from '~/services/history';
@@ -9,30 +13,44 @@ import api from '~/services/api';
 import Table from '~/components/Table';
 import Loading from '~/components/Loading';
 import SearchInput from '~/components/SearchInput';
+import Actions from '~/components/Actions'
+
 import { PageTitle } from '~/styles/PageTitle';
 
 import {
   Container,
-  LastItem,
-  OptionsContainer,
-  Badge,
-  OptionsList,
-  Option,
   Button,
-  LastOption,
+  Avatar,
+  LetterAvatar
 } from './styles';
+
+import { createLetterAvatar } from '~/util/letterAvatar';
+
 
 export default function Deliverymens() {
   const [deliverymens, setDeliverymens] = useState([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  const parserDlvmen = useCallback((data) => {
+    return data.map((deliverymen, index) => {
+
+      deliverymen.idText = deliverymen.id > 9 ? `#${deliverymen.id}` : `#0${deliverymen.id}`
+
+      if(!deliverymen.avatar) {
+        deliverymen.letterAvatar = createLetterAvatar(deliverymen.name, index)
+      }
+
+      return deliverymen
+    })
+  }, []);
+
   useEffect(() => {
     async function loadWorkers() {
       setLoading(true);
 
       const response = await api.get('deliverymen');
-      const { data } = response;
+      const data = parserDlvmen(response.data);
 
       setDeliverymens(data);
 
@@ -45,7 +63,7 @@ export default function Deliverymens() {
     setLoading(true);
 
     const response = await api.get('deliverymen');
-    const { data } = response;
+    const data = parserDlvmen(response.data);
 
     setDeliverymens(data);
     setLoading(false);
@@ -54,7 +72,7 @@ export default function Deliverymens() {
   async function onChange(event) {
     const response = await api.get(`deliverymen?dname=${event.target.value}`);
 
-    const { data } = response;
+    const data = parserDlvmen(response.data);
 
     setDeliverymens(data);
   }
@@ -63,7 +81,7 @@ export default function Deliverymens() {
     setVisible(!visible);
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(deliverymen) {
     // eslint-disable-next-line no-alert
     const confirm = window.confirm(
       'Você tem certeza que deseja excluir este entregador?'
@@ -74,9 +92,9 @@ export default function Deliverymens() {
     }
 
     try {
-      await api.delete(`deliverymen/${id}`);
+      await api.delete(`deliverymen/${deliverymen.id}`);
       updateWorkers();
-      toast.success('Entregador excluído com sucesso.');
+      toast.success(`Entregador '${deliverymen.name}' excluído com sucesso.`);
     } catch (err) {
       console.tron.log(err);
       toast.error('Erro ao excluir entregador.');
@@ -113,43 +131,40 @@ export default function Deliverymens() {
             <tbody>
               {deliverymens.map((deliverymen) => (
                 <tr key={deliverymen.id}>
-                  <td>#{deliverymen.id}</td>
-                  <td>{deliverymen.avatar_id}</td>
+                  <td>{deliverymen.idText}</td>
+                  <td id="deliverymenimg">
+                  {deliverymen.avatar ? (
+                    <Avatar src={deliverymen.avatar.url} />
+                  ) : (
+                    <LetterAvatar color={deliverymen?.letterAvatar.color}>
+                      {deliverymen?.letterAvatar.letters}
+                    </LetterAvatar>
+                  )}
+                  </td>
                   <td>{deliverymen.name}</td>
                   <td>{deliverymen.email}</td>
                   <td>
-                    <LastItem>
-                      <OptionsContainer>
-                        <Badge onClick={handleToggleVisible}>
-                          <MdMoreHoriz color="#333" size={25} />
-                        </Badge>
-                        <OptionsList visible={visible}>
-                          <Option>
-                            <Button
+                    <Actions>
+                    <Button
                               onClick={() => {
                                 history.push(
                                   `/deliverymen/edit/${deliverymen.id}`
                                 );
                               }}
                             >
-                              <MdEdit color="#4D85EE" size={16} />
+                              <MdEdit color="#4D85EE" size={24} />
                               <p>Editar</p>
                             </Button>
-                          </Option>
-                          <LastOption>
                             <Button
                               onClick={() => {
                                 handleToggleVisible();
-                                handleDelete(deliverymen.id);
+                                handleDelete(deliverymen);
                               }}
                             >
-                              <MdDeleteForever color="#DE3B3B" size={16} />
+                              <MdDeleteForever color="#DE3B3B" size={24} />
                               <p>Excluir</p>
                             </Button>
-                          </LastOption>
-                        </OptionsList>
-                      </OptionsContainer>
-                    </LastItem>
+                    </Actions>
                   </td>
                 </tr>
               ))}

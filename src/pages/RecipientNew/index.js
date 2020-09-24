@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as Yup from 'yup';
-import {PropTypes} from 'prop-types';
+// import {PropTypes} from 'prop-types';
 
 import { toast } from 'react-toastify';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
@@ -23,7 +23,9 @@ export default function RecipientNew({ match }) {
     async function getRecipient(){
       try {
         if(id){
+          setLoading(true)
           const { data} = await api.get(`recipient/${id}`);
+          setLoading(false)
           setRecipient(data);
         }
       } catch (err){
@@ -132,7 +134,7 @@ export default function RecipientNew({ match }) {
                 name="state"
               />
               <Input
-                type="number"
+                type="text"
                 placeholder="88888888"
                 title="Cep"
                 name="cep"

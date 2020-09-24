@@ -9,7 +9,7 @@ export default function LookOrder({ order, closeCallback }) {
     return () => {
       document.removeEventListener('keyup', closeCallback, false);
     };
-  }, []);
+  }, [closeCallback]);
 
     if(!order) return <></>;
 
@@ -56,8 +56,6 @@ export default function LookOrder({ order, closeCallback }) {
             ) : (
               <p>Não encontrada</p>
             )}
-
-
       </div>
     </Container>
   )

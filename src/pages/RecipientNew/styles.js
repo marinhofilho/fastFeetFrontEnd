@@ -64,20 +64,22 @@ export const Card = styled.div`
   > div {
     padding-left: 8px;
     padding-right: 8px;
-    &:nth-child(1),
-    &:nth-child(2) {
-      width: 50%;
-    }
-    &:nth-child(3),
-    &:nth-child(6) {
-      width: 15%;
-    },
-    &:nth-child(4),
-    &:nth-child(5) {
-      width: 35%;
-    }
-    &:last-child {
+    &:nth-child(1) {
       width: 100%;
+    }
+    &:nth-child(2) {
+      width: 60%;
+    }
+    &:nth-child(3) {
+      max-width: 15%;
+    }
+    &:nth-child(4) {
+      width: 25%;
+    }
+    &:nth-child(5),
+    &:nth-child(6),
+    &:nth-child(7) {
+      width: calc(100% / 3);
     }
   }
 `;

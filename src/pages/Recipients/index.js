@@ -3,30 +3,23 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   MdAdd,
-  MdRemoveRedEye,
   MdEdit,
   MdDeleteForever,
-  MdMoreHoriz,
 } from 'react-icons/md';
 
 import {
   Container,
-  LastItem,
-  OptionsContainer,
-  Badge,
-  OptionsList,
-  Option,
   Button,
-  LastOption,
 } from './styles';
+
 
 import history from '~/services/history';
 import api from '~/services/api';
 
+import Actions from '~/components/Actions'
 import Loading from '~/components/Loading';
 import SearchInput from '~/components/SearchInput';
 import Table from '~/components/Table';
-import AddButton from '~/components/AddButton';
 
 import { PageTitle } from '~/styles/PageTitle';
 
@@ -73,10 +66,11 @@ export default function Recipients({ recipient }) {
     setVisible(!visible);
   }
 
-  async function handleDelete(id) {
+  async function handleDelete(recipient) {
+    console.log(recipient)
     // eslint-disable-next-line no-alert
     const confirm = window.confirm(
-      'Você tem certeza que deseja excluir este destinatário?'
+      `Você tem certeza que deseja excluir o destinatário '${recipient.name}' ?`
     );
     // ok returns true (1)
     // cancel return false (0)
@@ -84,7 +78,7 @@ export default function Recipients({ recipient }) {
       return;
     }
     try {
-      await api.delete(`recipients/${id}`);
+      await api.delete(`recipients/${recipient.id}`);
       updateRecipients();
       toast.success('Destinatário excluído com sucesso.');
     } catch (err) {
@@ -124,23 +118,20 @@ export default function Recipients({ recipient }) {
                   updateRecipients={updateRecipients}
                   key={recipient.id}
                 >
-                  <td>#{recipient.id}</td>
+                  <td>{recipient.id > 9 ? `#${recipient.id}` : `#0${recipient.id}`}</td>
                   <td>{recipient.name}</td>
                   <td>
-                    {recipient.street},&#160;
-                    {recipient.number},&#160;
-                    {recipient.addition},&#160;
-                    {recipient.state},&#160;
-                    {recipient.city},&#160; CEP - {recipient.cep}
+                    {`
+                      ${recipient.street}, 
+                      ${recipient.number}, 
+                      ${recipient.addition ? recipient.addition + ',' : ''} 
+                      ${recipient.state}, 
+                      ${recipient.city}, 
+                      CEP - ${recipient.cep}  
+                    `}
                   </td>
                   <td>
-                    <LastItem>
-                      <OptionsContainer>
-                        <Badge onClick={handleToggleVisible}>
-                          <MdMoreHoriz color="#333" size={25} />
-                        </Badge>
-                        <OptionsList visible={visible}>
-                          <Option>
+                    <Actions>
                             <Button
                               onClick={() => {
                                 history.push(
@@ -148,24 +139,19 @@ export default function Recipients({ recipient }) {
                                 );
                               }}
                             >
-                              <MdEdit color="#4D85EE" size={16} />
+                              <MdEdit color="#4D85EE" size={24} />
                               <p>Editar</p>
                             </Button>
-                          </Option>
-                          <LastOption>
                             <Button
                               onClick={() => {
                                 handleToggleVisible();
-                                handleDelete(recipient.id);
+                                handleDelete(recipient);
                               }}
                             >
-                              <MdDeleteForever color="#DE3B3B" size={16} />
+                              <MdDeleteForever color="#DE3B3B" size={24} />
                               <p>Excluir</p>
                             </Button>
-                          </LastOption>
-                        </OptionsList>
-                      </OptionsContainer>
-                    </LastItem>
+                    </Actions>
                   </td>
                 </tr>
               ))}

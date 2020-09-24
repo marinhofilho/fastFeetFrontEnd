@@ -33,26 +33,5 @@ export const Container = styled.div`
       margin-top: 3px;
       font-size: 16px;
     }
-
-    p:last-child{
-      align-self: center;
-    }
-
-    hr {
-      margin-top: 10px;
-      color: #333;
-      opacity: 0.1;
-      border: 1px solid #333;
-    }
-
-    h3 {
-      margin-top: 5px;
-    }
-
-    img {
-      align-self: center;
-      max-width: 200px;
-      max-height: 100px;
-    }
   }
 `;

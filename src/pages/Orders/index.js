@@ -61,10 +61,8 @@ export default function Orders() {
       order.idText = order.id > 9 ? `#${order.id}` : `#0${order.id}`
 
       if (order.deliverymen) {
-        console.log(order.deliverymen.name)
         order.deliverymen.letterAvatar = createLetterAvatar(order.deliverymen.name, index)
       }
-      console.log(order.deliverymen.letterAvatar)
 
 
     if (order.canceled_at) {
@@ -77,7 +75,7 @@ export default function Orders() {
           )}.`
         };
       }
-      else if (order.start_date) {
+      else if (order.start_date && !order.end_date) {
         order.status = {
           color: orderStatus.takeout,
           text: 'RETIRADA',
@@ -205,8 +203,8 @@ export default function Orders() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Destinatário</th>
                 <th>Entregador</th>
+                <th>Destinatário</th>
                 <th>Cidade</th>
                 <th>Estado</th>
                 <th>Status</th>
@@ -219,23 +217,12 @@ export default function Orders() {
                 function above. Probably because of models relations */
                 <tr key={order.id}>
                   <td>{order.idText}</td>
-                  {/* order.recipient && order.recipient.name*/}
-                  {order.recipient?.name ? (
-                    <td>{order.recipient.name}</td>
-                  ) : (
-                    <td>Não cadastrado</td>
-                  )}
-                  {/* <td>{order.deliverymen.name}</td>
-                  this one breaks if the deliverymen is deleted.
-                  the working version needs to check if there is a deliverymen first
-                  'order.deliverymen' and not just the value it searches (in the example 'name')
-                   */}
                     {deliverymen ?
                       <DeliverymenImg>
                         {deliverymen && (
                           <>
-                          {deliverymen.avatar_id ? (
-                            <Avatar src={deliverymen.avatar_id.url} />
+                          {deliverymen.avatar ? (
+                            <Avatar src={deliverymen.avatar.url} />
                           ) : (
                             <LetterAvatar color={deliverymen?.letterAvatar.color}>
                               {deliverymen?.letterAvatar.letters}
@@ -248,6 +235,17 @@ export default function Orders() {
                           <td>Não cadastrado</td>
                         )
                     }
+                  {/* order.recipient && order.recipient.name*/}
+                  {order.recipient?.name ? (
+                    <td>{order.recipient.name}</td>
+                  ) : (
+                    <td>Não cadastrado</td>
+                  )}
+                  {/* <td>{order.deliverymen.name}</td>
+                  this one breaks if the deliverymen is deleted.
+                  the working version needs to check if there is a deliverymen first
+                  'order.deliverymen' and not just the value it searches (in the example 'name')
+                   */}
                   {/* order.recipient && order.recipient.city*/}
                   {order.recipient?.city ? (
                     <td>{order.recipient.city}</td>

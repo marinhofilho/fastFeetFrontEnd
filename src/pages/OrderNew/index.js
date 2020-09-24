@@ -3,7 +3,7 @@ import { PropTypes } from 'prop-types';
 import { toast } from 'react-toastify';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 
-import { Form, Button, Card, EmptyOrder } from './styles';
+import { Form, Button, Card } from './styles';
 import { PageTitle } from '~/styles/PageTitle';
 import Input from '~/components/Input';
 import Select from '~/components/Select';
@@ -23,6 +23,7 @@ export default function OrderNew({ match }) {
   // is used to fill the recipient(destinatário) input
   const [selectedDeliveryman, setSelectedDeliveryman] = useState(null);
   // is used to fill the deliverymen(entregador) input
+  // const ref = useRef(null);
 
   useEffect(() => {
     // is used to fill the input forms from recipient and deliverymen
@@ -39,13 +40,25 @@ export default function OrderNew({ match }) {
         if (id) {
           const { data } = await api.get(`orders/${id}`);
           setOrder(data);
+
           // code below works because of models relations
           setSelectedRecipient(data.recipient);
+          console.log(data.recipient)
           setSelectedDeliveryman(data.deliverymen);
+
+          /* ref.current.setFieldValue('recipient.name', {
+            value: data.recipient.id,
+            label: data.recipient.name,
+          })
+          ref.current.setFieldValue('deliveryman.name', {
+            value: data.deliverymen.id,
+            label: data.deliverymen.name,
+          }) */
           
         }
       } catch (err) {
         history.push('/orders');
+        console.tron.log(err.msg);
         toast.error('Falha ao carregar dados');
       }
     }
@@ -100,7 +113,7 @@ export default function OrderNew({ match }) {
         history.push('/orders');
       } catch (err) {
         toast.error(
-          'Não foi possível atualizar a encomenda. Verifique os seus dados'
+          'Não foi possível atualizar a encomenda. Verifique os seus dados.'
         );
       }
     } else {
@@ -110,7 +123,7 @@ export default function OrderNew({ match }) {
         history.push('/orders');
       } catch (err) {
         toast.error(
-          'Não foi possível realizar o cadastro. Verifique os seus dados'
+          'Não foi possível realizar o cadastro. Verifique os seus dados.'
         );
       }
     }
@@ -150,23 +163,23 @@ export default function OrderNew({ match }) {
       <Card>
         {/* async form can also be done with react-async-form */}
         <Select
-          name="recipient"
+          name="recipient.name"
           label="destinatário"
-          placeholder="Selecione um destinatário"
+          placeholder={'Selecione um destinatário'}
           options={recipientOptions}
           // when editing order there is a default value available
           defaultValue={
             order
               ? {
-                  value: order.recipient.id,
-                  label: order.recipient.name,
+                  value: order.recipient ? order.recipient.id : undefined,
+                  label: order.recipient ? order.recipient.name: undefined,
                 }
               : undefined
           }
           onChange={handleChangeRecipient}
         />
         <Select
-          name="deliveryman"
+          name="deliveryman.name"
           label="Entregador"
           placeholder="Selecione um entregador"
           options={deliverymenOptions}
@@ -174,8 +187,8 @@ export default function OrderNew({ match }) {
           defaultValue={
             order
               ? {
-                  value: order.deliverymen.id,
-                  label: order.deliverymen.name,
+                  value: order.deliverymen ? order.deliverymen.id : undefined,
+                  label: order.deliverymen ? order.deliverymen.name: undefined,
                 }
               : undefined
           }

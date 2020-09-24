@@ -1,5 +1,5 @@
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { darken } from 'polished';
 
 export const Container = styled.div`
@@ -55,8 +55,8 @@ export const ActionList = styled.div`
     background: none;
     width: 100%;
     color: #444444;
-
-
+    border-radius: 4px;
+    
   svg {
     margin-right: 8px;
   }

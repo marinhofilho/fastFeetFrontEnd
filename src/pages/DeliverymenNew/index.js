@@ -30,8 +30,10 @@ export default function DeliverymenNew({ match }) {
 
   useEffect(() => {
     async function loadData() {
+      setLoading(true)
       try {
         const { data } = await api.get(`deliverymen/${id}`);
+        setLoading(false)
         setDeliverymen(data);
       } catch (err) {
         history.push('/deliverymen');
