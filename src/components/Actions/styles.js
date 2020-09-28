@@ -24,7 +24,8 @@ export const Container = styled.div`
 export const ActionList = styled.div`
   position: absolute;
   z-index: 2;
-  width: 150px;
+  min-width: 150px;
+  width: auto;
   left: calc(50% - 75px);
   top: calc(100% + 5px);
   background: #fff;

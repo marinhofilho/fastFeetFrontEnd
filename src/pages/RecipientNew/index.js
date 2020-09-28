@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 import { PageTitle } from '~/styles/PageTitle';
 import Input from '~/components/Input';
+import InputMask from "react-input-mask";
 
 import api from '~/services/api';
 import history from '~/services/history';
@@ -35,8 +36,7 @@ export default function RecipientNew({ match }) {
     }
     getRecipient();
     }, [id]);
-    
-
+  
   function handleGoBack() {
     history.push('/recipients');
   }
@@ -46,11 +46,11 @@ export default function RecipientNew({ match }) {
     street: Yup.string().required(
       'É preciso informar o endereço do destinatário'
     ),
-    number: Yup.number('Digite um número').required('É preciso informar o número do endereço'),
+    number: Yup.number().typeError('É preciso informar um número').required('É preciso informar o número do endereço'),
     addition: Yup.string(),
-    state: Yup.string().required('É preciso informar o estado do destinatário'),
+    state: Yup.string().required('É preciso informar o Estado do destinatário'),
     city: Yup.string().required('É preciso informar a cidade do destinatário'),
-    cep: Yup.number('Informe um CEP válido').required('Informe um CEP'),
+    cep: Yup.string().required('Informe um CEP'),
   });
 
   async function handleSubmit(data) {
@@ -66,7 +66,6 @@ export default function RecipientNew({ match }) {
       }
     } else {
       try {
-        console.tron.log(data);
         await api.post('recipients', data);
         toast.success('Destinatário cadastrado com sucesso!');
         history.push('/recipients');
@@ -77,6 +76,14 @@ export default function RecipientNew({ match }) {
       }
     }
   }
+  
+  /* 
+  function handleCep(value) {
+      return value
+        .replace(/\D/g, '')
+        .replace(/(\d{5})(\d)/, '$1-$2')
+        .replace(/(-\d{3})\d+?$/, '$1') 
+  } */
 
   return (
     <Container>
@@ -133,12 +140,18 @@ export default function RecipientNew({ match }) {
                 title="Estado"
                 name="state"
               />
-              <Input
-                type="text"
-                placeholder="88888888"
-                title="Cep"
-                name="cep"
+              <InputMask
+                mask="99999-999"
+                maskPlaceholder={recipient?.cep || null}>
+                  <Input
+                  type="text"
+                  placeholder="12345-789"
+                  title="Cep"
+                  name="cep"
+                  pattern="[0-9]{5}-[0-9]{3}"
               />
+              </InputMask>
+              
             </Card>
           </Form>
         </>

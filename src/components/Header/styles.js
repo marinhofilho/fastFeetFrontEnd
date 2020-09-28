@@ -65,8 +65,19 @@ export const Profile = styled.div`
     color: #de3b3b;
     align-self: flex-end;
 
-    &:hover {
-      color: ${darken(0.15, '#de3b3b')};
-    }
+
   }
 `;
+
+export const Button = styled.button`
+  color: #de3b3b;
+  background-color: #fff;
+  border: none;
+  align-self: flex-end;
+  font-size: 16px;
+
+  &:hover {
+    color: ${darken(0.15, '#de3b3b')};
+  }
+
+`

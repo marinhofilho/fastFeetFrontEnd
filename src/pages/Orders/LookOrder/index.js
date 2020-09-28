@@ -21,7 +21,7 @@ export default function LookOrder({ order, closeCallback }) {
   return (
     <Container id="modal-order-container" onClick={handleCloseModal}>
       <div>
-        <strong>{`Informações da encomenda: '${order.product}'`}</strong>
+        <strong>{`Informações da encomenda '${order.product}' - ID '${order.id}':`}</strong>
           {order.recipient ? (
             <>
               <h3>Endereço do destinatário</h3>

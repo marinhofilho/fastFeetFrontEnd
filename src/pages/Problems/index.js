@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
+import { Link } from 'react-router-dom';
 import { MdDeleteForever, MdRemoveRedEye } from 'react-icons/md';
 
 import { toast } from 'react-toastify';
@@ -7,6 +7,7 @@ import { PageTitle } from '~/styles/PageTitle'
 import {
   Container,
   Button,
+  NoProblems
 } from './styles';
 
 import api from '~/services/api';
@@ -20,6 +21,7 @@ export default function Problems() {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [looking, setLooking] = useState(null);
+  const [noData, setNodata] = useState(false);
 
   useEffect(() => {
     async function loadProblems() {
@@ -27,6 +29,10 @@ export default function Problems() {
 
       const response = await api.get('problems');
       const { data } = response;
+
+      if(!data.length) {
+        setNodata(true);
+      }
 
       setProblems(data);
 
@@ -40,6 +46,10 @@ export default function Problems() {
 
     const response = await api.get('problems');
     const { data } = response;
+
+    if(!data.length) {
+      setNodata(true);
+    }
 
     setProblems(data);
     setLoading(false);
@@ -80,6 +90,15 @@ export default function Problems() {
           <header>
             <PageTitle>Gerenciamento de problemas</PageTitle>
           </header>
+          {noData ? (
+            <NoProblems>
+              <div>
+                <h2>Sem problemas...ufa!</h2>
+                <Link to="/orders">Veja os pedidos</Link>
+              </div>
+              </NoProblems>
+          ) : (
+            <>
           <Table>
             <thead>
               <tr>
@@ -100,7 +119,7 @@ export default function Problems() {
                   <td>{problem.description}</td>
                   <td>
                     <Actions>
-                            <Button
+                      <Button 
                               onClick={() => {
                                 handleLook({ ...problem })
                               }}
@@ -108,12 +127,12 @@ export default function Problems() {
                               <MdRemoveRedEye color="#8E5BE8" size={24} />
                               <p>Visualizar</p>
                             </Button>
-                            <Button
+                            <Button 
                               onClick={() => {
                                 handleDelete(problem.order_id);
                               }}
                             >
-                              <MdDeleteForever color="#DE3B3B" size={36} />
+                              <MdDeleteForever color="#DE3B3B" size={24} />
                               <p className="cancelP">Cancelar encomenda</p>
                             </Button>
                     </Actions>
@@ -122,6 +141,9 @@ export default function Problems() {
               ))}
             </tbody>
           </Table>
+            </>
+          )}
+
           {looking && (
             <LookProblem
               problem={looking}

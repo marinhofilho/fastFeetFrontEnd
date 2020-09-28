@@ -14,6 +14,8 @@ export const Container = styled.div`
     text-overflow: ellipsis;
     max-width: 700px;
   }
+
+
 `;
 
 export const Button = styled.button`
@@ -29,6 +31,32 @@ export const Button = styled.button`
   }
 
   .cancelP {
+    white-space: nowrap;
     text-align: left;   
   }
 `;
+
+export const NoProblems = styled.div`
+  display: flex;
+  height: 30vw;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    a {
+      align-self: center;
+      font-weight: bold;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+`

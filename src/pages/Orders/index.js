@@ -167,7 +167,7 @@ export default function Orders() {
   async function handleDelete(order) {
     // eslint-disable-next-line no-alert
     const confirm = window.confirm(
-      'Você tem certeza que quer deletar este pedido?'
+      `Você tem certeza que quer deletar o pedido '${order.id} - ${order.product}'?`
     );
     // ok returns true (1)
     // cancel return false (0)

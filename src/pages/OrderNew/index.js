@@ -43,7 +43,6 @@ export default function OrderNew({ match }) {
 
           // code below works because of models relations
           setSelectedRecipient(data.recipient);
-          console.log(data.recipient)
           setSelectedDeliveryman(data.deliverymen);
 
           /* ref.current.setFieldValue('recipient.name', {
@@ -54,6 +53,7 @@ export default function OrderNew({ match }) {
             value: data.deliverymen.id,
             label: data.deliverymen.name,
           }) */
+          // code above won't place the placeholder in place
           
         }
       } catch (err) {
@@ -64,6 +64,8 @@ export default function OrderNew({ match }) {
     }
     loadData();
   }, [id]);
+
+
 
   // pre-existing data from recipients
   const recipientOptions = useMemo(() => {
@@ -98,11 +100,18 @@ export default function OrderNew({ match }) {
   }
 
   async function handleSubmit(data) {
-    if (!selectedRecipient || !selectedDeliveryman || !data.product) {
-      toast.error('Preencha todo o formulário');
+    if (!selectedRecipient) {
+      toast.error('Selecione um destinatário');
+      return
+    } else if (!selectedDeliveryman) {
+      toast.error('Selecione um entregador');
+      return
+    } else if (!data.product) {
+      toast.error('Insira seu produto');
       return
     }
-    // picks data from the inputs and make then "postable/editable" on the backend
+  
+    // picks data from the inputs and make then "postable/editable" in backend
     data.recipient_id = selectedRecipient.id;
     data.deliverymen_id = selectedDeliveryman.id;
 
@@ -119,7 +128,7 @@ export default function OrderNew({ match }) {
     } else {
       try {
         await api.post('orders', data);
-        toast.success('Encomenda Cadastrada com sucesso!');
+        toast.success('Encomenda cadastrada com sucesso!');
         history.push('/orders');
       } catch (err) {
         toast.error(

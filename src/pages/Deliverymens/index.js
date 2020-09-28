@@ -84,7 +84,7 @@ export default function Deliverymens() {
   async function handleDelete(deliverymen) {
     // eslint-disable-next-line no-alert
     const confirm = window.confirm(
-      'Você tem certeza que deseja excluir este entregador?'
+      `Você tem certeza que deseja excluir o entregador '${deliverymen.name}'?`
     );
 
     if (!confirm) {

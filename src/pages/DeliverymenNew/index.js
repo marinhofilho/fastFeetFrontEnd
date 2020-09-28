@@ -24,20 +24,24 @@ const schema = Yup.object().shape({
 });
 
 export default function DeliverymenNew({ match }) {
-  const [loading, setLoading] = useState(false);
   const id = match.params.id ? decodeURIComponent(match.params.id) : null;
   const [deliverymen, setDeliverymen] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    //substitui componentDidMount -> com [] vazia;
+    //substitui componentDidUpdate -> com [] presente;
     async function loadData() {
       setLoading(true)
       try {
         const { data } = await api.get(`deliverymen/${id}`);
+
         setLoading(false)
         setDeliverymen(data);
+
       } catch (err) {
-        history.push('/deliverymen');
         toast.error('Não foi possível localizar este entregador');
+        history.push('/deliverymen');
       }
     }
 
@@ -56,6 +60,7 @@ export default function DeliverymenNew({ match }) {
         await api.put(`deliverymen/${id}`, data);
         toast.success('Entregador atualizado com sucesso!');
         history.push('/deliverymen');
+
       } catch (err) {
         toast.error(
           'Não foi possível atualizar o entregador. Confira os dados'
@@ -102,7 +107,7 @@ export default function DeliverymenNew({ match }) {
             </header>
 
             <Card>
-              <AvatarInput name="avatar_id" />
+              <AvatarInput name="avatar_id" id={id} />
               <Input title="name" placeholder="John Doe" name="name" />
               <Input
                 type="email"

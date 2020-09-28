@@ -5,15 +5,35 @@ import { useField } from '@rocketseat/unform';
 import { MdImage } from 'react-icons/md';
 import api from '~/services/api';
 import { Container } from './styles';
+// import { createLetterAvatar } from '~/util/letterAvatar';
 
-export default function AvatarInput() {
+export default function AvatarInput({ id }) {
   const { defaultValue, registerField } = useField('avatar');
 
   const [file, setFile] = useState(defaultValue && defaultValue.id);
   const [preview, setPreview] = useState(defaultValue && defaultValue.url);
-
   const ref = useRef();
+    
+  async function getFile(id){
+    if (id) {
+      const { data } = await api.get(`deliverymen/${id}`);
+      if(data.avatar?.url) { 
+        setPreview(data.avatar.url)
+      }
+      else {
+        const name = await (await api.get(`deliverymen/${id}`)).data.name;
+        /* const initials = 
+          name.length > 1 
+          ? name[0].charAt(0) + name[1].charAt(0)
+          : name[0].charAt(0) + name[0].charAt(1);
+        console.log(initials) */
+        // unecessary due to ui-avatar
+        const avatar = await fetch(`https://ui-avatars.com/api/?rounded=true&name=${name}&background=7c44e4&color=fff`);
+        setPreview(avatar.url);
+      }
+    } 
 
+  }
   useEffect(() => {
     if (ref.current) {
       registerField({
@@ -23,6 +43,10 @@ export default function AvatarInput() {
       });
     }
   }, [ref, registerField]);
+
+  useEffect(() => {
+    getFile(id);
+  }, [id]);
 
   async function handleChanged(e) {
     const data = new FormData();
@@ -34,7 +58,6 @@ export default function AvatarInput() {
     console.tron.log(response);
 
     const { id, url } = response.data;
-    console.tron.log(response.data);
 
     setFile(id);
     setPreview(url);

@@ -42,11 +42,11 @@ export default function SelectComponent({
       <Select
         name={name}
         styles={customStyles}
-        isSearchable={false}
+        // isSearchable={false}
         options={options}
         onChange={onChange}
         defaultValue={defaultValue}
-        placeholder={placeholder}
+        placeholder={defaultValue?.label || placeholder}
       />
     </Container>
   );
